@@ -40,3 +40,4 @@ This sample app is distributed under the terms of the BSD License. See LICENSE f
 ## Trademarks
 
 NumWorks is a registered trademark.
+
