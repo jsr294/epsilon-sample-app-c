@@ -11,6 +11,7 @@ endef
 
 src = $(addprefix src/,\
   main.c \
+  game_core.c \
 )
 
 CFLAGS = -std=c99
