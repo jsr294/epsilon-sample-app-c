@@ -2,12 +2,13 @@
    Rendu allégé : vue de dessus 6 px/tuile, rectangles uniformes uniquement. NON TESTÉ sur calculatrice. */
 #include "eadk.h"
 #include "game_core.h"
-#include <math.h>
 #include <stdbool.h>
 const char eadk_app_name[] __attribute__((section(".rodata.eadk_app_name"))) = "NumNLands";
 const uint32_t eadk_api_level __attribute__((section(".rodata.eadk_api_level"))) = 0;
 #define PX 6
 #define RGB(r,g,b) ((eadk_color_t)((((r)>>3)<<11)|(((g)>>2)<<5)|((b)>>3)))
+static float msqrt(float x){            /* racine carrée sans libm (Newton) */
+  if(x<=0)return 0;float y=x>2?x*.5f:1;for(int i=0;i<12;i++)y=.5f*(y+x/y);return y;}
 static float camx,camy;
 static void rect(int x,int y,int w,int h,eadk_color_t c){
   if(x<0){w+=x;x=0;}if(y<0){h+=y;y=0;}if(x+w>320)w=320-x;if(y+h>240)h=240-y;
@@ -22,9 +23,9 @@ static void render(void){
     int y=r*PX;float wy=camy+(y+PX/2-120)/(float)PX,dy=wy-CY;
     rect(0,y,320,PX,WATER);
     if(dy*dy>=IR*IR)continue;
-    float h=sqrtf(IR*IR-dy*dy),a=CX-h,b=CX+h,ds=wy-G.sy;
+    float h=msqrt(IR*IR-dy*dy),a=CX-h,b=CX+h,ds=wy-G.sy;
     if(ds*ds<G.sr*G.sr){
-      float hs=sqrtf(G.sr*G.sr-ds*ds),lo=G.sx-hs>a?G.sx-hs:a,hi=G.sx+hs<b?G.sx+hs:b;
+      float hs=msqrt(G.sr*G.sr-ds*ds),lo=G.sx-hs>a?G.sx-hs:a,hi=G.sx+hs<b?G.sx+hs:b;
       if(lo>=hi)span(y,a,b,STORM);else{span(y,a,lo,STORM);span(y,lo,hi,GRASS);span(y,hi,b,STORM);}
     }else span(y,a,b,STORM);}
   for(int i=0;i<G.no;i++){const Obst*o=&G.o[i];
