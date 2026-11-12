@@ -13,3 +13,7 @@ jobs:
         run: make build
       - name: Run make check
         run: make check
+      - uses: actions/upload-artifact@v4
+        with:
+          name: numnlands-nwa
+          path: output/app.nwa
